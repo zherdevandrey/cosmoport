@@ -19,15 +19,15 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan("com.space.service")
-@EnableJpaRepositories(basePackages = "com.space.repository")
+@ComponentScan("com.space.*")
+@EnableJpaRepositories(basePackages = "com.space.*")
 public class TestDataSourceConfig {
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan("com.space.model");
+        em.setPackagesToScan("com.space.*");
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);

@@ -24,11 +24,9 @@ public class ShipController {
     @GetMapping(value = "/ships")
     public List<Ship> ships(@RequestParam Map<String,String> requestParams){
 
-        List<Ship> ships = shipService.findShips("Avalon", "Mars", 0.9, 0.93);
+        List<Ship> ships = shipService.findShips(requestParams);
 
-        System.out.println(requestParams);
-
-        return null;
+        return ships;
     }
 
     @GetMapping(value = "/")
