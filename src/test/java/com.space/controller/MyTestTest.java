@@ -54,22 +54,22 @@ public class MyTestTest {
     public void test() throws ParseException {
 
         Map<String, String> paramMap = new HashMap<>();
-//        paramMap.put("name","Orion III");
-//        paramMap.put("planet","Mars");
+        paramMap.put("name","Orion III");
+        paramMap.put("planet","Mars");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
 
-        String datebefore = "2000-01-01";
-        String dateafter= "3000-01-01";
+        String datebefore = "3000-01-01";
+        String dateafter= "2000-01-01";
         Date before = simpleDateFormat.parse(datebefore);
         Date after = simpleDateFormat.parse(dateafter);
 
-        paramMap.put("before",before.getTime()+"");
-        paramMap.put("after",after.getTime()+"");
+//        paramMap.put("before",before.getTime()+"");
+//        paramMap.put("after",after.getTime()+"");
 
 //        paramMap.put("isUsed", "true");
 //
-//        paramMap.put("minSpeed","0.8");
-//        paramMap.put("maxSpeed","0.9");
+        paramMap.put("minSpeed","0.8");
+        paramMap.put("maxSpeed","0.9");
 //        paramMap.put("minCrewSize","600");
 //        paramMap.put("maxCrewSize","700");
 //        paramMap.put("minRating","1.0");

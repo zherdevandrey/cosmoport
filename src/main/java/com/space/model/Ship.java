@@ -1,14 +1,19 @@
 package com.space.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.sql.Date;
-import java.util.Objects;
 
 @Entity
 @Table(name = "ship", schema = "cosmoport", catalog = "")
 public class Ship {
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
+
     private String name;
     private String planet;
     private String shipType;
@@ -16,9 +21,12 @@ public class Ship {
     private Boolean isUsed;
     private Double speed;
     private Integer crewSize;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Double rating;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     public long getId() {
         return id;
@@ -108,24 +116,9 @@ public class Ship {
         this.rating = rating;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Ship that = (Ship) o;
-        return id == that.id &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(planet, that.planet) &&
-                Objects.equals(shipType, that.shipType) &&
-                Objects.equals(prodDate, that.prodDate) &&
-                Objects.equals(isUsed, that.isUsed) &&
-                Objects.equals(speed, that.speed) &&
-                Objects.equals(crewSize, that.crewSize) &&
-                Objects.equals(rating, that.rating);
+
+    public Ship() {
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, planet, shipType, prodDate, isUsed, speed, crewSize, rating);
-    }
+
 }
