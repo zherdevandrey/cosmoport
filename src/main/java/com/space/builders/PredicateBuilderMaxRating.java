@@ -14,6 +14,6 @@ public class PredicateBuilderMaxRating implements PredicateBuilderInterface {
     @Override
     public Predicate createPredicate(String paramValue, CriteriaBuilder criteriaBuilder, Root<Ship> shipRoot) {
         Double maxRating = Double.valueOf(paramValue);
-        return criteriaBuilder.lessThan(shipRoot.get("rating"), maxRating);
+        return criteriaBuilder.lessThanOrEqualTo(shipRoot.get("rating"), maxRating);
     }
 }

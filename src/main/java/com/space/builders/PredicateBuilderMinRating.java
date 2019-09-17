@@ -14,6 +14,6 @@ public class PredicateBuilderMinRating implements PredicateBuilderInterface {
     @Override
     public Predicate createPredicate(String paramValue, CriteriaBuilder criteriaBuilder, Root<Ship> shipRoot) {
         Double minRating = Double.valueOf(paramValue);
-        return criteriaBuilder.greaterThan(shipRoot.get("rating"), minRating);
+        return criteriaBuilder.greaterThanOrEqualTo(shipRoot.get("rating"), minRating);
     }
 }

@@ -14,6 +14,6 @@ public class PredicateBuilderMinCrewSize implements PredicateBuilderInterface {
     @Override
     public Predicate createPredicate(String paramValue, CriteriaBuilder criteriaBuilder, Root<Ship> shipRoot) {
         Integer minCrewSize = Integer.valueOf(paramValue);
-        return criteriaBuilder.greaterThan(shipRoot.get("crewSize"), minCrewSize);
+        return criteriaBuilder.greaterThanOrEqualTo(shipRoot.get("crewSize"), minCrewSize);
     }
 }

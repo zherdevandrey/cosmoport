@@ -15,6 +15,6 @@ public class PredicateBuilderBefore implements PredicateBuilderInterface {
     @Override
     public Predicate createPredicate(String paramValue, CriteriaBuilder criteriaBuilder, Root<Ship> shipRoot) {
         Long before = Long.valueOf(paramValue);
-        return criteriaBuilder.lessThan(shipRoot.get("prodDate"), new Date(before));
+        return criteriaBuilder.lessThanOrEqualTo(shipRoot.get("prodDate"), new Date(before));
     }
 }

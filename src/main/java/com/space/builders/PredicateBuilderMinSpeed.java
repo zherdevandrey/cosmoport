@@ -14,6 +14,6 @@ public class PredicateBuilderMinSpeed implements PredicateBuilderInterface {
     @Override
     public Predicate createPredicate(String paramValue, CriteriaBuilder criteriaBuilder, Root<Ship> shipRoot) {
         Double minSpeed = Double.valueOf(paramValue);
-        return criteriaBuilder.greaterThan(shipRoot.get("speed"), minSpeed);
+        return criteriaBuilder.greaterThanOrEqualTo(shipRoot.get("speed"), minSpeed);
     }
 }

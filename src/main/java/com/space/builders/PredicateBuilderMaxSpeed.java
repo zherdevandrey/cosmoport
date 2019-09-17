@@ -14,6 +14,6 @@ public class PredicateBuilderMaxSpeed implements PredicateBuilderInterface {
     @Override
     public Predicate createPredicate(String paramValue, CriteriaBuilder criteriaBuilder, Root<Ship> shipRoot) {
         Double maxSpeed = Double.valueOf(paramValue);
-        return criteriaBuilder.lessThan(shipRoot.get("speed"), maxSpeed);
+        return criteriaBuilder.lessThanOrEqualTo(shipRoot.get("speed"), maxSpeed);
     }
 }
