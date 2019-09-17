@@ -39,13 +39,10 @@ public class ShipRepositoryImpl implements ShipRepository {
             criteriaQuery.orderBy(criteriaBuilder.asc(shipRoot.get(fieldName)));
         }
         TypedQuery<Ship> results = entityManager.createQuery(criteriaQuery);
-
         Integer pageSize = Integer.valueOf(requestParams.get("pageSize"));
         Integer pageNumber = Integer.valueOf(requestParams.get("pageNumber"));
-
         results.setFirstResult(pageSize * pageNumber);
         results.setMaxResults(pageSize);
-
         return results.getResultList();
     }
 
@@ -69,15 +66,17 @@ public class ShipRepositoryImpl implements ShipRepository {
     }
 
     @Override
-    public Ship updateShip(Ship ship) {
-        entityManager.merge(ship);
-        entityManager.flush();
-        return ship;
+    public Ship updateShip(Ship ship, long id) {
+        Ship updatedShip = entityManager.find(Ship.class, id);
+        updateShip(updatedShip, ship);
+        entityManager.persist(updatedShip);
+        return updatedShip;
     }
 
     @Override
     public void deleteShip(Ship ship) {
-        entityManager.remove(ship);
+        Ship mergedShip = entityManager.merge(ship);
+        entityManager.remove(mergedShip);
     }
 
     private Predicate[] createPredicateList(Map<String,String> requestParams){
@@ -91,6 +90,39 @@ public class ShipRepositoryImpl implements ShipRepository {
             }
         }
         return predicates.toArray(new Predicate[0]);
+    }
+
+    public void updateShip(Ship updatedShip, Ship ship){
+        if(ship.getId() != 0) {
+            updatedShip.setId(ship.getId());
+        }
+        if(ship.getName() != null) {
+            updatedShip.setName(ship.getName());
+        }
+        if(ship.getPlanet() != null) {
+            updatedShip.setPlanet(ship.getPlanet());
+        }
+        if(ship.getUsed() != null) {
+            updatedShip.setUsed(ship.getUsed());
+        }
+        if(ship.getCrewSize() != null) {
+            updatedShip.setCrewSize(ship.getCrewSize());
+        }
+        if(ship.getShipType() != null) {
+            updatedShip.setShipType(ship.getShipType());
+        }
+        if(ship.getProdDate() != null) {
+            updatedShip.setProdDate(ship.getProdDate());
+        }
+        if(ship.getRating() == null) {
+            updatedShip.setRating(null);
+        }
+        if(ship.getRating() != null) {
+            updatedShip.setRating(ship.getRating());
+        }
+        if(ship.getSpeed() != null) {
+            updatedShip.setSpeed(ship.getSpeed());
+        }
     }
 
     @PostConstruct

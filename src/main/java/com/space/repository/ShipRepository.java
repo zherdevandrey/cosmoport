@@ -12,14 +12,17 @@ import java.util.Map;
 
 @Repository
 public interface ShipRepository  {
+
     List<Ship> findShips(Map<String,String> requestParams);
+
     int countShips(Map<String,String> requestParams);
 
     Ship findShipById(long id);
 
     Ship saveShip(Ship ship);
 
-    Ship updateShip(Ship ship);
+    Ship updateShip(Ship ship, long id);
 
     void deleteShip(Ship ship);
+
 }

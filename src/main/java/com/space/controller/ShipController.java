@@ -10,12 +10,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
-import javax.validation.constraints.*;
 import java.text.DecimalFormat;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -44,23 +41,23 @@ public class ShipController {
     }
 
     @DeleteMapping(value = "/rest/ships/{id}")
-    public void delete(@PathVariable long id){
+    public void delete(@PathVariable @ValidateId long id){
         shipService.deleteShip(id);
     }
 
 
-    @PostMapping(value = "/rest/ships", consumes = "application/json",
-            produces = "application/json")
+    @PostMapping(value = "/rest/ships")
     @ResponseBody
     public Ship save(@Valid @RequestBody Ship ship) throws IllegalArgumentException {
+        validateForNullParams(ship);
         validateShip(ship);
         return shipService.saveShip(ship);
     }
 
-    @PostMapping(value = "/rest/ships/{id}", consumes = "application/json",
-            produces = "application/json")
+    @PostMapping(value = "/rest/ships/{id}")
     @ResponseBody
-    public Ship update(@RequestBody Ship ship, @PathVariable int id){
+    public Ship update(@RequestBody Ship ship, @PathVariable @ValidateId long id){
+        validateShip(ship);
         return shipService.updateShip(ship, id);
     }
 
@@ -73,51 +70,51 @@ public class ShipController {
     @ResponseStatus(value=HttpStatus.NOT_FOUND)
     @ExceptionHandler(ShipNotFoundException.class)
     public void createNotFoundResponse() {
-        System.out.println("createNotFoundResponse");
     }
 
     @ResponseStatus(value=HttpStatus.BAD_REQUEST)
     @ExceptionHandler({IllegalArgumentException.class, ConstraintViolationException.class})
     public void createBadResponse() {
-        System.out.println("createBadResponse");
+    }
+
+    private void validateForNullParams(Ship ship){
+        if (ship.getName() == null
+            || ship.getPlanet() == null
+            || ship.getSpeed() == null
+            || ship.getProdDate() == null
+            || ship.getCrewSize() == null
+            || ship.getPlanet() == null)
+            throw new IllegalArgumentException();
     }
 
     private void validateShip(Ship ship) throws IllegalArgumentException {
-        boolean badRequest = false;
-        if(ship == null){
-            throw new IllegalArgumentException();
+        if(ship.getName() != null) {
+            if (ship.getName().isEmpty() || ship.getName().length() > 50) {
+                throw new IllegalArgumentException();
+            }
         }
-        if (ship.getName() == null || ship.getName().isEmpty() || ship.getName().length() > 50){
-            throw new IllegalArgumentException();
+        if(ship.getPlanet() != null) {
+            if (ship.getPlanet().isEmpty() || ship.getPlanet().length() > 50) {
+                throw new IllegalArgumentException();
+            }
         }
-        if ( ship.getPlanet() == null || ship.getPlanet().isEmpty() || ship.getPlanet().length() > 50 ){
-            throw new IllegalArgumentException();
+        if(ship.getCrewSize() != null) {
+            if (ship.getCrewSize() < 1 || ship.getCrewSize() > 9999) {
+                throw new IllegalArgumentException();
+            }
         }
-        if (ship.getCrewSize() == null || ship.getCrewSize() < 1 || ship.getPlanet().length() > 9999 ){
-            throw new IllegalArgumentException();
+        if(ship.getSpeed() != null) {
+            DecimalFormat df = new DecimalFormat("#.##");
+            double speed = ship.getSpeed();
+            if (speed < 0.01 || speed > 0.99) {
+                throw new IllegalArgumentException();
+            }
         }
-
-        if(ship.getSpeed() == null){
-            throw new IllegalArgumentException();
-        }
-        DecimalFormat df = new DecimalFormat("#.##");
-        double speed  = ship.getSpeed();
-
-
-        if (speed < 0.01 || speed > 0.99 ){
-            throw new IllegalArgumentException();
-        }
-
-        if(ship.getProdDate() == null){
-            throw new IllegalArgumentException();
-        }
-        int prodDate = ship.getProdDate().toLocalDate().getYear();
-        if (prodDate < 2800 || prodDate > 3019 ){
-            throw new IllegalArgumentException();
-        }
-
-        if (badRequest){
-            throw new IllegalArgumentException();
+        if(ship.getProdDate() != null) {
+            int prodDate = ship.getProdDate().toLocalDate().getYear();
+            if (prodDate < 2800 || prodDate > 3019) {
+                throw new IllegalArgumentException();
+            }
         }
     }
 

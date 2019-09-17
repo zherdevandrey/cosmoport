@@ -38,32 +38,43 @@ public class ShipService {
     }
 
     public Ship saveShip(Ship ship) {
-        if(ship.getUsed() == null){
+        if(ship.getUsed() == null) {
             ship.setUsed(false);
         }
-        double rating = calculateRating(ship);
-        ship.setRating(rating);
+        calculateRating(ship);
         return shipRepository.saveShip(ship);
-    }
-
-    private double calculateRating(Ship ship){
-        double speed = ship.getSpeed();
-        int productionYear = ship.getProdDate().toLocalDate().getYear();
-        double k = ship.getUsed() == false ? 1.0 : 0.5;
-        double rating = 80 * speed * k / (3019 - productionYear +1 );
-        return rating;
     }
 
     public void deleteShip(long id) {
          shipRepository.deleteShip(findShipById(id));
     }
 
-    public Ship updateShip(Ship ship, int id) {
+    public Ship updateShip(Ship ship, long id) {
         if(shipRepository.findShipById(id) == null){
             throw new ShipNotFoundException();
         }
-        ship.setId(id);
-        return shipRepository.updateShip(ship);
+        calculateRating(ship);
+        Ship updated = shipRepository.updateShip(ship, id);
+        if(updated.getRating() == null){
+            calculateRating(updated);
+        }
+        return shipRepository.updateShip(updated, id);
     }
 
+    private void calculateRating(Ship ship){
+        if(ship.getSpeed() != null && ship.getProdDate() !=null && ship.getUsed() != null) {
+            double speed = ship.getSpeed();
+            int productionYear = ship.getProdDate().toLocalDate().getYear();
+            double k = ship.getUsed() == false ? 1.0 : 0.5;
+            double rating = 80 * speed * k / (3019 - productionYear + 1);
+            rating = roundDouble(rating);
+            ship.setRating(rating);
+        }
+    }
+
+    private double roundDouble(double rating){
+        double val = Math.round(rating*100);
+        val = (double)((int) val);
+        return val /100;
+    }
 }

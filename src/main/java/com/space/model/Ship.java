@@ -1,11 +1,8 @@
 package com.space.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.sql.Date;
 
 @Entity
@@ -13,7 +10,6 @@ import java.sql.Date;
 public class Ship {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
-
     private String name;
     private String planet;
     private String shipType;
@@ -21,7 +17,6 @@ public class Ship {
     private Boolean isUsed;
     private Double speed;
     private Integer crewSize;
-
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Double rating;
 
@@ -116,9 +111,7 @@ public class Ship {
         this.rating = rating;
     }
 
-
     public Ship() {
     }
-
 
 }
