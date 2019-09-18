@@ -24,20 +24,11 @@ public class ShipRepositoryImpl implements ShipRepository {
 
     @Autowired
     private EntityManager entityManager;
-    private CriteriaQuery<Ship> criteriaQuery;
-    private Root<Ship> shipRoot;
-    private CriteriaBuilder criteriaBuilder;
     private Map<String, PredicateBuilderInterface> predicateMap;
 
     @Override
     public List<Ship> findShips(Map<String,String> requestParams) {
-        Predicate[] predicates = createPredicateList(requestParams);
-        criteriaQuery.where(predicates);
-        String order = requestParams.get("order");
-        if(order != null){
-            String fieldName = ShipOrder.valueOf(order).getFieldName();
-            criteriaQuery.orderBy(criteriaBuilder.asc(shipRoot.get(fieldName)));
-        }
+        CriteriaQuery<Ship> criteriaQuery = createCriteriaQuery(requestParams);
         TypedQuery<Ship> results = entityManager.createQuery(criteriaQuery);
         Integer pageSize = Integer.valueOf(requestParams.get("pageSize"));
         Integer pageNumber = Integer.valueOf(requestParams.get("pageNumber"));
@@ -48,8 +39,7 @@ public class ShipRepositoryImpl implements ShipRepository {
 
     @Override
     public int countShips(Map<String, String> requestParams) {
-        Predicate[] predicates = createPredicateList(requestParams);
-        criteriaQuery.where(predicates);
+        CriteriaQuery<Ship> criteriaQuery = createCriteriaQuery(requestParams);
         return entityManager.createQuery(criteriaQuery).getResultList().size();
     }
 
@@ -79,7 +69,20 @@ public class ShipRepositoryImpl implements ShipRepository {
         entityManager.remove(mergedShip);
     }
 
-    private Predicate[] createPredicateList(Map<String,String> requestParams){
+    private CriteriaQuery createCriteriaQuery(Map<String, String> requestParams){
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Ship> criteriaQuery = criteriaBuilder.createQuery(Ship.class);
+        Root<Ship> shipRoot = criteriaQuery.from(Ship.class);
+        Predicate[] predicates = createPredicateList(requestParams, criteriaBuilder, shipRoot);
+        String order = requestParams.get("order");
+        if(order != null){
+            String fieldName = ShipOrder.valueOf(order).getFieldName();
+            criteriaQuery.orderBy(criteriaBuilder.asc(shipRoot.get(fieldName)));
+        }
+        return criteriaQuery.where(predicates);
+    }
+
+    private Predicate[] createPredicateList(Map<String,String> requestParams, CriteriaBuilder criteriaBuilder, Root<Ship> shipRoot){
         ArrayList<Predicate> predicates = new ArrayList<>();
         for (Map.Entry<String,String> entry : requestParams.entrySet()) {
             String paramName = entry.getKey();
@@ -127,9 +130,6 @@ public class ShipRepositoryImpl implements ShipRepository {
 
     @PostConstruct
     public void init() {
-        criteriaBuilder = entityManager.getCriteriaBuilder();
-        criteriaQuery = criteriaBuilder.createQuery(Ship.class);
-        shipRoot = criteriaQuery.from(Ship.class);
         predicateMap = new HashMap<>();
         predicateMap.put(PredicateBuilderName.paramName, new PredicateBuilderName());
         predicateMap.put(PredicateBuilderPlanet.paramName, new PredicateBuilderPlanet());

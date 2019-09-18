@@ -13,8 +13,6 @@ public class PredicateBuilderIsUsed implements PredicateBuilderInterface {
 
     @Override
     public Predicate createPredicate(String paramValue, CriteriaBuilder criteriaBuilder, Root<Ship> shipRoot) {
-
-        System.out.println("test");
         boolean isUser = Boolean.valueOf(paramValue);
         return criteriaBuilder.equal(shipRoot.get("used"), isUser);
     }
